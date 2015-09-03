@@ -44,8 +44,10 @@ Promise.prototype = {
   // 2. PRODUCE STATE BY RESULT (VALUE/REASON)
   // ---------------------------------------------------------------------------
   'resolver': function(value) {
+    this.transitAsFullfilled(value);
   },
   'rejector': function(reason) {
+    this.transitAsRejected(reason);
   },
   // ---------------------------------------------------------------------------
   // 3. HANDLE STATE + RESULT
