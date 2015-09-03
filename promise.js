@@ -112,6 +112,18 @@ Promise.prototype = {
         consumer.attempt(planned);
       }
     });
+  },
+  // ---------------------------------------------------------------------------
+  'log': function() {
+    var args = [].slice.call(arguments);
+    var prefix = this.name ? ['[', this.name, ']'] : [];
+    args = prefix.concat(args);
+    // this.log.apply(console, args);
+  },
+  'warn': function() {
+    var args = [].slice.call(arguments);
+    args = ['[', this.name, ']'].concat(args);
+    // this.log.apply(console, args);
   }
 };
 Promise.makeConsumingPlan = function(producer, consumer) {
