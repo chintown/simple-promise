@@ -4,6 +4,10 @@ function Promise(planned) {
   this.state = new StatefulResult();
   this.logics = new LogicPack();
   this.queue = [];
+
+  if (Helper.isDefined(planned)) {
+    this.attempt(planned);
+  }
 }
 Promise.PENDING = 0;
 Promise.FULFILLED = 1;
@@ -13,7 +17,13 @@ Promise.prototype = {
   // ---------------------------------------------------------------------------
   // 1. ENTRY - PRODUCE RESULT. NOT STATE
   // ---------------------------------------------------------------------------
-
+  'attempt': function(planned) {
+    // planned has it's input, logic and fixed destination: fullfiled / rejected
+    // `attempt` gives it the actual logic of it's destination
+    var resolver = this.resolver.bind(this);
+    var rejector = this.rejector.bind(this);
+    planned(resolver, rejector);
+  },
   // ---------------------------------------------------------------------------
   // 1. ENTRY - EXTEND CONSUMER.
   // ---------------------------------------------------------------------------
@@ -31,7 +41,10 @@ Promise.prototype = {
   // ---------------------------------------------------------------------------
   // 2. PRODUCE STATE BY RESULT (VALUE/REASON)
   // ---------------------------------------------------------------------------
-
+  'resolver': function(value) {
+  },
+  'rejector': function(reason) {
+  },
   // ---------------------------------------------------------------------------
   // 3. HANDLE STATE + RESULT
   // ---------------------------------------------------------------------------
