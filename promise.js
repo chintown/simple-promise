@@ -79,7 +79,18 @@ Promise.prototype = {
     }
   },
   'resolveCallableThen': function(context, callablethen) {
-    // TODO
+    var quota = Helper.makeQuota(1);
+    var resolver = Helper.limitCall(this, this.resolver, quota);
+    var rejector = Helper.limitCall(this, this.rejector, quota);
+
+    try {
+      callablethen.call(context,
+        resolver,
+        rejector
+      );
+    } catch (e) {
+      rejector(e);
+    }
   },
   'rejector': function(reason) {
     this.transitAsRejected(reason);
