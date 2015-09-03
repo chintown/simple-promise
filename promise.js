@@ -1,7 +1,11 @@
 var Helper = require('./helper');
 
 function Promise(planned) {
+  this.state = new StatefulResult();
 }
+Promise.PENDING = 0;
+Promise.FULFILLED = 1;
+Promise.REJECTED = 2;
 Promise.prototype = {
   'constructor': Promise,
   // ---------------------------------------------------------------------------
@@ -23,6 +27,25 @@ Promise.prototype = {
   // ---------------------------------------------------------------------------
   // 4. PASS STATE + RESULT TO NEXT POSSIBLE PROMISES
   // ---------------------------------------------------------------------------
+};
+// -----------------------------------------------------------------------------
+function StatefulResult(state, result) {
+  this.state = state || Promise.PENDING;
+  this.result = result; // XXX never change it even it's falsy
+}
+StatefulResult.isValid = function(state) {
+  return Promise.PENDING <= state.type() && state.type() <= Promise.REJECTED;
+};
+StatefulResult.prototype = {
+  'isReady': function() {
+    return this.state !== Promise.PENDING;
+  },
+  'type': function() {
+    return this.state;
+  },
+  'value': function() {
+    return this.result;
+  }
 };
 // -----------------------------------------------------------------------------
 
