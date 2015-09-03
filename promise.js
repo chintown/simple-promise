@@ -37,6 +37,8 @@ Promise.prototype = {
   },
   'enqueue': function(consumer) {
     this.queue.push(consumer);
+
+    this.tryFeedConsumers();
   },
   // ---------------------------------------------------------------------------
   // 2. PRODUCE STATE BY RESULT (VALUE/REASON)
@@ -65,6 +67,8 @@ Promise.prototype = {
     }
 
     this.state = new StatefulResult(state, result);
+
+    this.tryFeedConsumers();
   },
   // ---------------------------------------------------------------------------
   // 4. PASS STATE + RESULT TO NEXT POSSIBLE PROMISES
