@@ -48,7 +48,24 @@ Promise.prototype = {
   // ---------------------------------------------------------------------------
   // 3. HANDLE STATE + RESULT
   // ---------------------------------------------------------------------------
+  'transitAsFullfilled': function(value) {
+    this.transit(Promise.FULFILLED, value);
+  },
+  'transitAsRejected': function(reason) {
+    this.transit(Promise.REJECTED, reason);
+  },
+  'transit': function(state, result) {
+    if (this.state.isReady() ||
+        this.state.type() === state ||
+        !StatefulResult.isValid(this.state)
+          ) {
+      this.warn('transit: `%s`:`%s` => `%s`:`%s`. SKIP',
+                  this.state.type(), this.state.value(), state, result);
+      return;
+    }
 
+    this.state = new StatefulResult(state, result);
+  },
   // ---------------------------------------------------------------------------
   // 4. PASS STATE + RESULT TO NEXT POSSIBLE PROMISES
   // ---------------------------------------------------------------------------
