@@ -1,3 +1,5 @@
+var Helper = require('./helper');
+
 function Promise(planned) {
 }
 
