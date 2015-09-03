@@ -52,6 +52,40 @@ Promise.prototype = {
   // ---------------------------------------------------------------------------
   // 4. PASS STATE + RESULT TO NEXT POSSIBLE PROMISES
   // ---------------------------------------------------------------------------
+  'tryFeedConsumers': function() {
+    if (!this.state.isReady()) {
+      this.warn('tryFeedConsumers: state is PENDING. abort.');
+      return;
+    }
+
+    var producer = this;
+    Helper.asyncCall(function() {
+      while (producer.queue.length) {
+        var consumer = producer.queue.shift();
+
+        var planned = Promise.makeConsumingPlan(producer, consumer);
+        consumer.attempt(planned);
+      }
+    });
+  }
+};
+Promise.makeConsumingPlan = function(producer, consumer) {
+  return Promise.planned(function() {
+    var input = producer.state.value();
+    var logic = consumer.logics.getBy(producer.state);
+    return logic(input);
+  });
+};
+Promise.planned = function(logic) {
+  // logic only considers input and output.
+  // it might go with error or expections
+  return function(resolver, rejector) {
+    try {
+      resolver(logic());
+    } catch (e) {
+      rejector(e);
+    }
+  };
 };
 // -----------------------------------------------------------------------------
 function StatefulResult(state, result) {
