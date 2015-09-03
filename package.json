@@ -1,0 +1,27 @@
+{
+  "name": "simple-promise",
+  "version": "1.0.0",
+  "description": "A simple re-implementation of promises aplus spec",
+  "main": "promise.js",
+  "scripts": {
+    "test": "node testrunner.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chintown/simple-promise"
+  },
+  "keywords": [
+    "promise",
+    "promises",
+    "aplus"
+  ],
+  "author": "Mike Chen <chintown@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chintown/simple-promise/issues"
+  },
+  "homepage": "https://github.com/chintown/simple-promise",
+  "devDependencies": {
+    "promises-aplus-tests": "^2.1.1"
+  }
+}
