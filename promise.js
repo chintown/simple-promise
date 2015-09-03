@@ -50,6 +50,11 @@ Promise.prototype = {
       );
     } else if (Promise.isPromise(value)) {
       this.resolvePromise(value);
+    } else if (Helper.isObject(value) || Helper.isFunction(value)) {
+      this.probCallableThenProperty(value, // reject if exception happened
+        function(self, callableThen) {
+        }
+      );
     } else {
       this.transitAsFullfilled(value);
     }
@@ -70,6 +75,15 @@ Promise.prototype = {
   },
   'rejector': function(reason) {
     this.transitAsRejected(reason);
+  },
+  'probCallableThenProperty': function(value, onProbed) {
+    // never access twice. side effect may be invovled from object getter
+    try {
+      var then = value.then;
+      onProbed(this, then);
+    } catch (e) {
+      this.transitAsRejected(e);
+    }
   },
   // ---------------------------------------------------------------------------
   // 3. HANDLE STATE + RESULT
