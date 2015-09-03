@@ -53,6 +53,11 @@ Promise.prototype = {
     } else if (Helper.isObject(value) || Helper.isFunction(value)) {
       this.probCallableThenProperty(value, // reject if exception happened
         function(self, callableThen) {
+          if (Helper.isFunction(callableThen)) {
+            self.resolveCallableThen(value, callableThen);
+          } else {
+            self.transitAsFullfilled(value);
+          }
         }
       );
     } else {
@@ -72,6 +77,9 @@ Promise.prototype = {
     } else {
       this.transit(userState.type(), userState.value());
     }
+  },
+  'resolveCallableThen': function(context, callablethen) {
+    // TODO
   },
   'rejector': function(reason) {
     this.transitAsRejected(reason);
