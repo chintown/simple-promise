@@ -44,7 +44,29 @@ Promise.prototype = {
   // 2. PRODUCE STATE BY RESULT (VALUE/REASON)
   // ---------------------------------------------------------------------------
   'resolver': function(value) {
-    this.transitAsFullfilled(value);
+    if (value === this) {
+      this.transitAsRejected(
+        new TypeError('The promise and its value refer to the same object')
+      );
+    } else if (Promise.isPromise(value)) {
+      this.resolvePromise(value);
+    } else {
+      this.transitAsFullfilled(value);
+    }
+  },
+  'resolvePromise': function(userPromise) {
+    // host user promise by giving final resolving routes
+    var userState = userPromise.state;
+    if (!userState.isReady()) {
+      // usually, then accepts plain `logics`,
+      // but we inject plans
+      userPromise.then(
+        this.resolver.bind(this), // plan to guild execution flow back to self
+        this.rejector.bind(this)  // plan to guild execution flow back to self
+      );
+    } else {
+      this.transit(userState.type(), userState.value());
+    }
   },
   'rejector': function(reason) {
     this.transitAsRejected(reason);
@@ -109,6 +131,10 @@ Promise.planned = function(logic) {
       rejector(e);
     }
   };
+};
+Promise.isPromise = function(candidate) {
+  return Helper.isDefined(candidate) &&
+          candidate.constructor == Promise;
 };
 // -----------------------------------------------------------------------------
 function StatefulResult(state, result) {
