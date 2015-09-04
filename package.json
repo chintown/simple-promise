@@ -4,7 +4,7 @@
   "description": "A simple re-implementation of promises aplus spec",
   "main": "promise.js",
   "scripts": {
-    "test": "node test.js"
+    "test": "node ./test/promise.js"
   },
   "repository": {
     "type": "git",
