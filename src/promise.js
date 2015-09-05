@@ -14,6 +14,9 @@ Promise.FULFILLED = 1;
 Promise.REJECTED = 2;
 Promise.prototype = {
   'constructor': Promise,
+  'logger': {
+    'log': function() {}, 'warn': function() {}
+  },
   // ---------------------------------------------------------------------------
   // 1. ENTRY - PRODUCE RESULT. NOT STATE
   // ---------------------------------------------------------------------------
@@ -118,8 +121,10 @@ Promise.prototype = {
         this.state.type() === state ||
         !StatefulResult.isValid(this.state)
           ) {
-      this.warn('transit: `%s`:`%s` => `%s`:`%s`. SKIP',
-                  this.state.type(), this.state.value(), state, result);
+      var msg = 'transit: ' +
+                '`' + this.state.type() + '`:`' + this.state.value() + '`' +
+                ' => `' + state + '`:`' + result + '`. SKIP';
+      this.warn(msg);
       return;
     }
 
@@ -132,7 +137,7 @@ Promise.prototype = {
   // ---------------------------------------------------------------------------
   'tryFeedConsumers': function() {
     if (!this.state.isReady()) {
-      this.warn('tryFeedConsumers: state is PENDING. abort.');
+      this.warn('tryFeedConsumers: state is pending. ABORT.');
       return;
     }
 
@@ -149,14 +154,11 @@ Promise.prototype = {
   // ---------------------------------------------------------------------------
   'log': function() {
     var args = [].slice.call(arguments);
-    var prefix = this.name ? ['[', this.name, ']'] : [];
-    args = prefix.concat(args);
-    // this.log.apply(console, args);
+    this.logger.log.apply(this.logger, args);
   },
   'warn': function() {
     var args = [].slice.call(arguments);
-    args = ['[', this.name, ']'].concat(args);
-    // this.log.apply(console, args);
+    this.logger.warn.apply(this.logger, args);
   }
 };
 Promise.makeConsumingPlan = function(producer, consumer) {
