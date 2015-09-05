@@ -1,0 +1,83 @@
+<html>
+<head>
+  <!-- <link rel='stylesheet' href='css/promise.css'/> -->
+</head>
+<body>
+  <script type='text/javascript' src='js/vendor/jquery.min.js'></script>
+  <script type='text/javascript' src='js/promise.js'></script>
+  <script type='text/javascript' src='js/promise-har-logger.js'></script>
+
+
+  <script type='text/javascript'>
+  var Promise = require('promise').Promise;
+  $(document).ready(function () {
+    var harLogger = new HarLogger();
+    Promise.prototype.logger = harLogger;
+
+    function A() {
+      return new Promise(function thinkerA(resolve) {
+        setTimeout(function() {
+          var a = 10, b = 30;
+          resolve(a + b);
+        }, 100);
+      }, 'A');
+    }
+
+    function B(result) {
+      return new Promise(function thinkerB(resolve) {
+        setTimeout(function() {
+          resolve(result);
+        }, 100);
+      }, 'B');
+    }
+
+    function C(result) {
+      return new Promise(function thinkerB(resolve) {
+        setTimeout(function() {
+          resolve(result);
+        }, 100);
+      }, 'C');
+    }
+
+    function example1() {
+      A()
+        .then(function(result) {
+          return B(result / 2);
+        })
+        .then(C)
+        .then(function() {
+          console.log(JSON.stringify(harLogger.export()));
+        });
+    }
+
+    function example2() {
+      A()
+        .then(function() {
+          B();
+        })
+        .then(C);
+    }
+
+    function example3() {
+      A()
+        .then(B())
+        .then(C)
+        .then(function() {
+          console.log(JSON.stringify(harLogger.export()));
+        });
+    }
+
+    function example4() {
+      A()
+        .then(B)
+        .then(C);
+    }
+
+    example1();
+    // $('.plus').click();
+  });
+  </script>
+
+
+</body>
+</html>
