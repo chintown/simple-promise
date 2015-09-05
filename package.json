@@ -4,7 +4,8 @@
   "description": "A simple re-implementation of promises aplus spec",
   "main": "promise.js",
   "scripts": {
-    "test": "node ./test/promise.js"
+    "test": "node ./test/promise.js",
+    "browserify": "browserify -r ./src/promise.js:promise > ./htdoc/js/promise.js"
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,7 @@
   },
   "homepage": "https://github.com/chintown/simple-promise",
   "devDependencies": {
-    "promises-aplus-tests": "^2.1.1"
+    "promises-aplus-tests": "^2.1.1",
+    "browserify": "^11.0.1"
   }
 }
