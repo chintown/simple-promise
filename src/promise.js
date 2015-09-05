@@ -1,12 +1,17 @@
 var Helper = require('./helper');
 
-function Promise(planned) {
+function Promise(planned, name, parentPromise) {
+  this.name = name
   this.state = new StatefulResult();
   this.logics = new LogicPack();
   this.queue = [];
+  this.isFirstResolving = true;
 
   if (Helper.isDefined(planned)) {
+    this.log('start', this, null, planned);
     this.attempt(planned);
+  } else {
+    this.log('start', this, parentPromise, null);
   }
 }
 Promise.PENDING = 0;
@@ -32,7 +37,7 @@ Promise.prototype = {
   // ---------------------------------------------------------------------------
   'then': function(fullfilledLogic, rejectedLogic) {
     // could be primative, function or object. but normally, it's a Promise
-    var consumer = new Promise();
+    var consumer = new Promise(null, 'then of (' + this.name + ')', this);
     consumer.logics = new LogicPack(fullfilledLogic, rejectedLogic);
 
     this.enqueue(consumer);
@@ -47,6 +52,11 @@ Promise.prototype = {
   // 2. PRODUCE STATE BY RESULT (VALUE/REASON)
   // ---------------------------------------------------------------------------
   'resolver': function(value) {
+    if (this.isFirstResolving) {
+      this.log('startEnd', this);
+      this.log('resolve', this, value);
+      this.isFirstResolving = false;
+    }
     if (value === this) {
       this.transitAsRejected(
         new TypeError('The promise and its value refer to the same object')
@@ -96,6 +106,8 @@ Promise.prototype = {
     }
   },
   'rejector': function(reason) {
+    this.log('startEnd', this);
+    this.log('resolve', this, reason);
     this.transitAsRejected(reason);
   },
   'probCallableThenProperty': function(value, onProbed) {
@@ -127,9 +139,10 @@ Promise.prototype = {
       this.warn(msg);
       return;
     }
-
+    this.log('resolveEnd', this);
     this.state = new StatefulResult(state, result);
 
+    this.log('transit', this, state);
     this.tryFeedConsumers();
   },
   // ---------------------------------------------------------------------------
@@ -150,6 +163,7 @@ Promise.prototype = {
         consumer.attempt(planned);
       }
     });
+    this.log('transitEnd', this);
   },
   // ---------------------------------------------------------------------------
   'log': function() {
