@@ -1,0 +1,25 @@
+{
+  "name": "simple-promise",
+  "version": "1.0.0",
+  "authors": [
+    "Mike Chen <chintown@gmail.com>"
+  ],
+  "description": "A simple re-implementation of promises aplus spec",
+  "main": "htdoc/index.html",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "promise",
+    "promises aplus",
+    "visualization"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/chintown/simple-promise",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test"
+  ]
+}
