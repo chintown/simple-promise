@@ -162,7 +162,7 @@ Promise.prototype = {
 Promise.makeConsumingPlan = function(producer, consumer) {
   return Promise.planned(function() {
     var input = producer.state.value();
-    var logic = consumer.logics.getBy(producer.state);
+    var logic = consumer.logics.getBy(producer.state.type());
     return logic(input);
   });
 };
@@ -214,7 +214,7 @@ function LogicPack(fullfilledLogic, rejectedLogic) {
 }
 LogicPack.prototype = {
   'getBy': function(state) {
-    return this.logics[state.type()];
+    return this.logics[state];
   }
 };
 
