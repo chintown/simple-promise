@@ -1,3 +1,6 @@
 [submodule "git_modules/harviewer"]
 	path = git_modules/harviewer
 	url = https://github.com/janodvarko/harviewer.git
+[submodule "git_modules/harviewe"]
+	path = git_modules/harviewe
+	url = https://github.com/janodvarko/harviewer.git
