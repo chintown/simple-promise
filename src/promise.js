@@ -258,5 +258,6 @@ module.exports = {
       resolve: exportedResolve,
       reject: exportedReject
     };
-  }
+  },
+  'Promise': Promise
 };
