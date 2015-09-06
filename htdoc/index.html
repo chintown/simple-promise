@@ -50,7 +50,7 @@
         })
         .then(C)
         .then(function() {
-          console.log(JSON.stringify(harLogger.export()));
+          HarViewer.load(harLogger.export());
         });
     }
 
