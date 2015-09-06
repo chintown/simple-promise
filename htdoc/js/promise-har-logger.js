@@ -172,11 +172,16 @@
             if (pair.name == 'state') {
               entry.response.status = pair.value;
               entry.response.statusText = this._getStateName(pair.value);
-              entry.response.headers.push(this._getHeader('state', this._getStateName(pair.value)));
+              entry.response.headers.push(
+                this._getHeader('state', this._getStateName(pair.value))
+              );
             } else if (pair.name == 'result') {
-              entry.response.headers.push(this._getHeader('result', JSON.stringify(pair.value)));
+              entry.response.headers.push(
+                this._getHeader('result', JSON.stringify(pair.value))
+              );
             } else if (pair.name == 'plan') {
-              entry.response.headers.push(this._getHeader('plan', this._funcBody(pair.value)));
+              entry.response.headers.push(
+                this._getHeader('plan', this._funcBody(pair.value)));
             }
           }
         }

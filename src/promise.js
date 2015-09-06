@@ -1,7 +1,7 @@
 var Helper = require('./helper');
 
 function Promise(planned, name, parentPromise) {
-  this.name = name
+  this.name = name;
   this.state = new StatefulResult();
   this.logics = new LogicPack();
   this.queue = [];
