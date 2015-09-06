@@ -8,10 +8,10 @@ function Promise(planned, name, parentPromise) {
   this.isFirstResolving = true;
 
   if (Helper.isDefined(planned)) {
-    this.log('start', this, null, planned);
+    this.log('start', this, null);
     this.attempt(planned);
   } else {
-    this.log('start', this, parentPromise, null);
+    this.log('start', this, parentPromise);
   }
 }
 Promise.PENDING = 0;
@@ -28,6 +28,7 @@ Promise.prototype = {
   'attempt': function(planned) {
     // planned has it's input, logic and fixed destination: fullfiled / rejected
     // `attempt` gives it the actual logic of it's destination
+    this.log('attempt', this, planned);
     var resolver = this.resolver.bind(this);
     var rejector = this.rejector.bind(this);
     planned(resolver, rejector);

@@ -30,6 +30,9 @@
     'startEnd': function(promise) {
       this.stopTimer(promise, 'start');
     },
+    'attempt': function(promise, plan) {
+      this.addMeta(promise, 'plan', plan);
+    },
     'resolve': function(promise, value) {
       this.startTimer(promise, 'resolve', value);
       this.addMeta(promise, 'result', value);
@@ -169,8 +172,11 @@
             if (pair.name == 'state') {
               entry.response.status = pair.value;
               entry.response.statusText = this._getStateName(pair.value);
+              entry.response.headers.push(this._getHeader('state', this._getStateName(pair.value)));
             } else if (pair.name == 'result') {
-              entry.response.content.text = JSON.stringify(pair.value);
+              entry.response.headers.push(this._getHeader('result', JSON.stringify(pair.value)));
+            } else if (pair.name == 'plan') {
+              entry.response.headers.push(this._getHeader('plan', this._funcBody(pair.value)));
             }
           }
         }
@@ -199,6 +205,12 @@
     },
     '_getIsoStamp': function() {
       return (new Date()).toISOString();
+    },
+    '_getHeader': function(name, value) {
+      return {
+        'name': name,
+        'value': value
+      };
     }
     // -------------------------------------------------------------------------
   };
